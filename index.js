@@ -51,7 +51,8 @@ exports.handler = function(event, context) {
         index: process.env.ES_INDEX_PREFIX + '-' + indexTimestamp, // adds a timestamp to index. Example: alblogs-2015.03.31
         doctype: process.env.ES_DOCTYPE,
         extraFields: JSON.parse(process.env.ES_EXTRA_FIELDS || '{}'),
-        maxBulkIndexLines: process.env.ES_BULKSIZE // Max Number of log lines to send per bulk interaction with ES
+        maxBulkIndexLines: process.env.ES_BULKSIZE || 200, // Max Number of log lines to send per bulk interaction with ES
+        timestampFieldName: process.env.ES_TIMESTAMP_FIELD_NAME || 'timestamp'
     };
 
     /**
@@ -213,7 +214,7 @@ function parse(line) {
     // but are also quote-enclosed for strings containing spaces.
     var field_names = [
         'type',
-        'timestamp',
+        esDomain.timestampFieldName,
         'elb',
         'client',
         'target',
